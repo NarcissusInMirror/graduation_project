@@ -65,7 +65,12 @@ def multi_label_net(pretrained_weights=None, input_size = (200, 200, 3)):
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     adam = Adam(lr=0.01)
     adagrad = Adagrad()
-
+    
+    def mycrossentropy(y_true, y_pred, e=0.1):
+        loss1 = K.binary_crossentropy(y_true, y_pred)
+        loss2 = K.binary_crossentropy(K.ones_like(y_pred)/nb_classes, y_pred)
+        return (1-e)*loss1 + e*loss2
+    
     model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
     
     if pretrained_weights != None:

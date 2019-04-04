@@ -20,7 +20,7 @@ def load(dataset='train'):
     
     
     elif dataset == 'test':
-        f = h5py.File("./data_related/testdata.h5")
+        f = h5py.File("./data_related/testdata_1.h5")
         x = f['data'].value
         y = f['labels'].value
         f.close()
