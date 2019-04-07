@@ -10,51 +10,42 @@ import os
 import numpy as np
 
 
-def multi_label_net(pretrained_weights=None, input_size = (200, 200, 3)):
+def vgg19_multi_label_net(pretrained_weights=None, input_size = (200, 200, 3)):
 #     , kernel_regularizer=regularizers.l2(0.01)
     img_input = Input(input_size)    
     # Block 1
     x = BatchNormalization(axis=3, name='bn0')(img_input)
     x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1')(x)
-    x = BatchNormalization(axis=3, name='bn1')(x)
     x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2')(x)
-    x = BatchNormalization(axis=3, name='bn2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
     # Block 2
     x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
-    x = BatchNormalization(axis=3, name='bn3')(x)
     x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2')(x)
-    x = BatchNormalization(axis=3, name='bn4')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
     # Block 3
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
-    x = BatchNormalization(axis=3, name='bn5')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
-    x = BatchNormalization(axis=3, name='bn6')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3')(x)
-    x = BatchNormalization(axis=3, name='bn7')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv4')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
     # Block 4
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
-    x = BatchNormalization(axis=3, name='bn8')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
-    x = BatchNormalization(axis=3, name='bn9')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3')(x)
-    x = BatchNormalization(axis=3, name='bn10')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv4')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
     # Block 5
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
-    x = BatchNormalization(axis=3, name='bn11')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
-    x = BatchNormalization(axis=3, name='bn12')(x)
-    x = Conv2D(512, (3, 3), activation='relu',  padding='same', name='block5_conv3')(x)
-    x = BatchNormalization(axis=3, name='bn13')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv4')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
-    # Top layers
+
     x = Flatten(name='flatten')(x)
-    x = Dense(512, activation='relu', name='fc1')(x)
-    x = Dense(512, activation='relu', name='fc2')(x)
-    x = Dense(4, activation='sigmoid', name='prediction')(x)
+    x = Dense(4096, activation='relu', name='fc1')(x)
+    x = Dense(4096, activation='relu', name='fc2')(x)
+    x = Dense(4, activation='sigmoid', name='predictions')(x)
+
 
     # Create model.
     model = Model(img_input, x, name='label_net')

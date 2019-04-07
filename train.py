@@ -4,6 +4,9 @@ import datetime
 from data_related.getdata import load
 from model import multi_label_net
 from resnet50_model import res50_multi_label_net
+from vgg19_model import vgg19_multi_label_net
+from inception_model import inception_multi_label_net
+from vgg16_transfer_model import vgg16_transfer_multi_label_net
 from keras.callbacks import ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 
 
@@ -23,7 +26,7 @@ x_valid = np.reshape(x_valid, (-1, 200, 200, 3))
 # /= 255
 
 # create model
-model = multi_label_net()
+model = vgg19_multi_label_net()
 # model = res50_multi_label_net()
 # create timestamp and directory to store trained weights
 current_time = datetime.datetime.now()
@@ -41,4 +44,4 @@ check = ModelCheckpoint("./record_files/weight_files/" + timestamp + "/weights.{
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
 
 # start training
-model.fit(x_train, y_train, batch_size=32, nb_epoch=100,callbacks=[TensorBoard(log_dir='./record_files/tensorboard_files', write_graph=True), check, reduce_lr], validation_data=(x_valid,y_valid))
+model.fit(x_train, y_train, batch_size=32, nb_epoch=100,callbacks=[TensorBoard(log_dir='./record_files/tensorboard_files', write_graph=True), check], validation_data=(x_valid,y_valid))
